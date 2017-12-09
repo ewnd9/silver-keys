@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Surfingkeys",
+    "name": "silver-keys",
     "short_name": "Map your keys for web surfing",
     "version": "0.9.17",
     "description": "Expand your browser with javascript and keyboard.",
@@ -61,10 +61,7 @@
             ],
             "match_about_blank": true,
             "js": [
-                "content_scripts/common_content.min.js",
-                "content_scripts/front.js",
-                "content_scripts/content_scripts.js",
-                "content_scripts/top.js"
+                "dist/content-scripts/index.js.bundle.js"
             ],
             "css": [
                 "content_scripts/content_scripts.css"
