@@ -51,7 +51,7 @@
     ],
     "background": {
         "scripts": [
-            "background.js"
+            "background/index.bundle.js"
         ]
     },
     "content_scripts": [
@@ -61,10 +61,7 @@
             ],
             "match_about_blank": true,
             "js": [
-                "dist/content-scripts/index.js.bundle.js"
-            ],
-            "css": [
-                "content_scripts/content_scripts.css"
+                "content-scripts/index.bundle.js"
             ],
             "run_at": "document_start",
             "all_frames": true

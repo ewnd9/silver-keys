@@ -1,11 +1,13 @@
 {
   "parser": "babel-eslint",
   "globals": {
-    "Promise": true
+    "Promise": true,
+    "chrome": true
   },
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "plugins": [],
   "rules": {
