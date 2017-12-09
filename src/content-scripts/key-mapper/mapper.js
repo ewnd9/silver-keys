@@ -21,11 +21,17 @@ export function map(new_keystroke, old_keystroke, domain, new_annotation) {
 
       if (Commands.items.hasOwnProperty(cmd)) {
         const meta = Commands.items[cmd];
-        const ag = !isProvider() ? null : {annotation: new_annotation || meta.annotation, feature_group: meta.feature_group};
+        const ag = !isProvider()
+          ? null
+          : { annotation: new_annotation || meta.annotation, feature_group: meta.feature_group };
 
-        const keybound = createKeyTarget(() => {
-          meta.code.call(meta.code, args);
-        }, ag, meta.repeatIgnore);
+        const keybound = createKeyTarget(
+          () => {
+            meta.code.call(meta.code, args);
+          },
+          ag,
+          meta.repeatIgnore
+        );
 
         Normal.mappings.add(encodeKeystroke(new_keystroke), keybound);
       }
@@ -48,7 +54,7 @@ function parseCommand(cmdline) {
       tokens.push(part);
       part = '';
     } else {
-      if (cmdline.charAt(i) === '\"') {
+      if (cmdline.charAt(i) === '"') {
         pendingToken = !pendingToken;
       } else {
         part += cmdline.charAt(i);
@@ -77,7 +83,11 @@ function _mapkey(mode, keys, annotation, jscode, options) {
     if (_defaultMapping) {
       // to save memory, we keep annotations only in frontend.html, where they are used to create usage message.
       if (isProvider()) {
-        keybound = createKeyTarget(jscode, {annotation: annotation, feature_group: ((false /*mode === Visual*/) ? 9 :14)}, options.repeatIgnore);
+        keybound = createKeyTarget(
+          jscode,
+          { annotation: annotation, feature_group: false /*mode === Visual*/ ? 9 : 14 },
+          options.repeatIgnore
+        );
       } else {
         keybound = createKeyTarget(jscode, null, options.repeatIgnore);
       }
@@ -85,7 +95,11 @@ function _mapkey(mode, keys, annotation, jscode, options) {
       mode.mappings.add(keys, keybound);
     } else {
       // for user defined mappings, annotations are kept in content.
-      keybound = createKeyTarget(jscode, {annotation: annotation, feature_group: ((false /*mode === Visual*/) ? 9 :14)}, options.repeatIgnore);
+      keybound = createKeyTarget(
+        jscode,
+        { annotation: annotation, feature_group: false /*mode === Visual*/ ? 9 : 14 },
+        options.repeatIgnore
+      );
       mode.mappings.add(keys, keybound);
     }
   }

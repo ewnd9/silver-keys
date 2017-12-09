@@ -22,7 +22,7 @@ export const runtime = {
     nextLinkRegex: /(\b(next)\b)|下页|下一页|>>/i,
     prevLinkRegex: /(\b(prev|previous)\b)|上页|上一页|<</i,
     pageUrlRegex: [],
-    clickablePat: /(https?|thunder|magnet):\/\/\S+/ig,
+    clickablePat: /(https?|thunder|magnet):\/\/\S+/gi,
     hintAlign: 'center',
     defaultSearchEngine: 'g',
     showModeStatus: false,
@@ -45,7 +45,17 @@ export const runtime = {
 };
 
 function RUNTIME(action, args) {
-  const actionsRepeatBackground = ['closeTab', 'nextTab', 'previousTab', 'moveTab', 'reloadTab', 'setZoom', 'closeTabLeft','closeTabRight', 'focusTabByIndex'];
+  const actionsRepeatBackground = [
+    'closeTab',
+    'nextTab',
+    'previousTab',
+    'moveTab',
+    'reloadTab',
+    'setZoom',
+    'closeTabLeft',
+    'closeTabRight',
+    'focusTabByIndex'
+  ];
   (args = args || {}).action = action;
 
   if (actionsRepeatBackground.indexOf(action) !== -1) {
@@ -135,36 +145,39 @@ if (chrome.runtime.connect) {
   runtime.updateHistory = function(type, cmd) {
     const prop = type + 'History';
 
-    runtime.command({
-      action: 'getSettings',
-      key: prop
-    }, response => {
-      let list = response.settings[prop] || [];
-      const toUpdate = {};
+    runtime.command(
+      {
+        action: 'getSettings',
+        key: prop
+      },
+      response => {
+        let list = response.settings[prop] || [];
+        const toUpdate = {};
 
-      if (cmd.constructor.name === 'Array') {
-        toUpdate[prop] = cmd;
+        if (cmd.constructor.name === 'Array') {
+          toUpdate[prop] = cmd;
 
-        runtime.command({
-          action: 'updateSettings',
-          settings: toUpdate
-        });
-      } else if (cmd.length) {
-        list = list.filter(c => c.length && c !== cmd);
-        list.unshift(cmd);
+          runtime.command({
+            action: 'updateSettings',
+            settings: toUpdate
+          });
+        } else if (cmd.length) {
+          list = list.filter(c => c.length && c !== cmd);
+          list.unshift(cmd);
 
-        if (list.length > 50) {
-          list.pop();
+          if (list.length > 50) {
+            list.pop();
+          }
+
+          toUpdate[prop] = list;
+
+          runtime.command({
+            action: 'updateSettings',
+            settings: toUpdate
+          });
         }
-
-        toUpdate[prop] = list;
-
-        runtime.command({
-          action: 'updateSettings',
-          settings: toUpdate
-        });
       }
-    });
+    );
   };
 
   chrome.runtime.onMessage.addListener(function(msg, sender, response) {
@@ -179,20 +192,24 @@ if (chrome.runtime.connect) {
     if (window === top) {
       resolve(window.location.href);
     } else {
-      runtime.command({
-        action: 'getTopURL'
-      }, rs => {
-        resolve(rs.url);
-      });
+      runtime.command(
+        {
+          action: 'getTopURL'
+        },
+        rs => {
+          resolve(rs.url);
+        }
+      );
     }
   });
 
   runtime.getTopURL = cb => getTopURLPromise.then(cb);
-  runtime.postTopMessage = msg => getTopURLPromise.then(topUrl => {
-    if (new URL(topUrl).origin === 'file://') {
-      topUrl = '*';
-    }
+  runtime.postTopMessage = msg =>
+    getTopURLPromise.then(topUrl => {
+      if (new URL(topUrl).origin === 'file://') {
+        topUrl = '*';
+      }
 
-    top.postMessage(msg, topUrl);
-  });
+      top.postMessage(msg, topUrl);
+    });
 }

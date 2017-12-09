@@ -10,7 +10,7 @@ export const Mode = {
   mode_stack: [],
   eventListeners: {},
   specialKeys: {
-    '<Alt-s>': ['<Alt-s>'],       // hotkey to toggleBlacklist
+    '<Alt-s>': ['<Alt-s>'], // hotkey to toggleBlacklist
     '<Esc>': ['<Esc>']
   },
   addEventListener(evt, handler) {
@@ -35,14 +35,15 @@ export const Mode = {
     return this;
   },
   isSpecialKeyOf(specialKey, keyToCheck) {
-    return (-1 !== Mode.specialKeys[specialKey].indexOf(decodeKeystroke(keyToCheck)));
+    return -1 !== Mode.specialKeys[specialKey].indexOf(decodeKeystroke(keyToCheck));
   },
   postHandler(event) {
     if (event.sk_stopPropagation) {
       event.stopImmediatePropagation();
       event.preventDefault();
       // keyup event also needs to be suppressed for the key whose keydown has been suppressed.
-      this.stopKeyupPropagation = (event.type === 'keydown' && this.enableKeyupMerging) ? event.keyCode : 0;
+      this.stopKeyupPropagation =
+        event.type === 'keydown' && this.enableKeyupMerging ? event.keyCode : 0;
     }
   },
   enter(priority, reentrant) {
@@ -63,23 +64,27 @@ export const Mode = {
         // pop up all the modes over this
         this.mode_stack = this.mode_stack.slice(pos);
       } else {
-        let modeList = Mode.stack().map(function(u) { return u.name; }).join(',');
+        let modeList = Mode.stack()
+          .map(function(u) {
+            return u.name;
+          })
+          .join(',');
         devConsole.log(
-          "Mode {0} pushed into mode stack again.".format(this.name),
-          "Modes in stack: {0}".format(modeList)
+          'Mode {0} pushed into mode stack again.'.format(this.name),
+          'Modes in stack: {0}'.format(modeList)
         );
       }
       // stackTrace();
     }
 
-    this.mode_stack.sort(function(a,b) {
-      return (a.priority < b.priority) ? 1 : ((b.priority < a.priority) ? -1 : 0);
+    this.mode_stack.sort(function(a, b) {
+      return a.priority < b.priority ? 1 : b.priority < a.priority ? -1 : 0;
     });
 
     pushModes(this.mode_stack);
 
     // var modes = mode_stack.map(function(m) {
-        // return m.name;
+    // return m.name;
     // }).join('->');
     // console.log('enter {0}, {1}'.format(this.name, modes));
 
@@ -90,17 +95,17 @@ export const Mode = {
       let cm = this.mode_stack[0];
       let sl = cm.statusLine;
       if (sl === undefined) {
-          sl = runtime.conf.showModeStatus ? cm.name :  "";
+        sl = runtime.conf.showModeStatus ? cm.name : '';
       }
-      if (sl !== "" && window !== top) {
+      if (sl !== '' && window !== top) {
         if (chrome.extension.getURL('').indexOf(window.location.origin) === 0) {
           if (!cm.frontendOnly) {
-            sl += "✩";
+            sl += '✩';
           }
         } else {
           let pathname = window.location.pathname.split('/');
           if (pathname.length) {
-            sl += " - frame: " + pathname[pathname.length - 1];
+            sl += ' - frame: ' + pathname[pathname.length - 1];
           }
         }
       }
@@ -124,7 +129,7 @@ export const Mode = {
       }
 
       // var modes = mode_stack.map(function(m) {
-          // return m.name;
+      // return m.name;
       // }).join('->');
       // console.log('exit {0}, {1}'.format(this.name, modes));
     }

@@ -9,7 +9,7 @@
     "node": true,
     "jest": true
   },
-  "plugins": [],
+  "plugins": ["prettier"],
   "rules": {
     "arrow-parens": [
       2,
@@ -24,6 +24,14 @@
     "semi": [
       2,
       "always"
+    ],
+    "prettier/prettier": [
+      2,
+      {
+        "trailingComma": "none",
+        "printWidth": 100,
+        "singleQuote": true
+      }
     ]
   }
 }

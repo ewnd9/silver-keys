@@ -42,15 +42,15 @@ Normal.addEventListener('keydown', function(event) {
   const realTarget = getRealEdit(event);
 
   if (isEditable(realTarget)) {
-    if (Mode.isSpecialKeyOf("<Esc>", event.sk_keyName)) {
+    if (Mode.isSpecialKeyOf('<Esc>', event.sk_keyName)) {
       realTarget.blur();
       // Insert.exit();
-    } else if (event.key === "Tab"){
+    } else if (event.key === 'Tab') {
       // enable Tab key to focus next input
       Normal.passFocus(true);
       // Insert.enter(realTarget);
     }
-  } else if (Mode.isSpecialKeyOf("<Alt-s>", event.sk_keyName)) {
+  } else if (Mode.isSpecialKeyOf('<Alt-s>', event.sk_keyName)) {
     Normal.toggleBlacklist();
     event.sk_stopPropagation = true;
   } else if (event.sk_keyName.length) {
@@ -115,13 +115,13 @@ Normal.addEventListener('mousedown', function(event) {
 Normal.mappings = new Trie();
 Normal.map_node = Normal.mappings;
 
-Normal.repeats = "";
+Normal.repeats = '';
 
 Normal._handleMapKey = function(event, onNoMatched) {
   const thisMode = this;
   const key = event.sk_keyName;
 
-  if (Mode.isSpecialKeyOf("<Esc>", key) && _finish(this)) {
+  if (Mode.isSpecialKeyOf('<Esc>', key) && _finish(this)) {
     event.sk_stopPropagation = true;
     event.sk_suppressed = true;
   } else if (this.pendingMap) {
@@ -135,8 +135,12 @@ Normal._handleMapKey = function(event, onNoMatched) {
       _finish(thisMode);
       thisMode.postHandler(event);
     }, 0);
-  } else if (this.repeats !== undefined &&
-    this.map_node === this.mappings && (key >= "1" || (this.repeats !== "" && key >= "0")) && key <= "9") {
+  } else if (
+    this.repeats !== undefined &&
+    this.map_node === this.mappings &&
+    (key >= '1' || (this.repeats !== '' && key >= '0')) &&
+    key <= '9'
+  ) {
     // reset only after target action executed or cancelled
     this.repeats += key;
 
@@ -148,15 +152,15 @@ Normal._handleMapKey = function(event, onNoMatched) {
 
     if (!this.map_node) {
       onNoMatched && onNoMatched(last);
-      event.sk_suppressed = (last !== this.mappings);
+      event.sk_suppressed = last !== this.mappings;
       _finish(this);
     } else if (this.map_node.meta) {
       let code = this.map_node.meta.code;
       if (code.length) {
-          // bound function needs arguments
-          this.pendingMap = code;
-          // Front.showKeystroke(key, this.name);
-          event.sk_stopPropagation = true;
+        // bound function needs arguments
+        this.pendingMap = code;
+        // Front.showKeystroke(key, this.name);
+        event.sk_stopPropagation = true;
       } else {
         this.setLastKeys && this.setLastKeys(this.map_node.meta.word);
         runtime.RUNTIME.repeats = parseInt(this.repeats) || 1;
